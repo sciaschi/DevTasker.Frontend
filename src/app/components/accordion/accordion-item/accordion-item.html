@@ -4,7 +4,7 @@
     <ng-content select="[header]"></ng-content>
   </div>
 
-  <div class="accordion-content" #contentEl [class.is-open]="isOpen">
+  <div class="accordion-content" #contentEl [class.is-open]="isOpen()">
     <ng-content></ng-content>
   </div>
 </div>

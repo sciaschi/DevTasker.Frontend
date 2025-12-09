@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {Project, ProjectDetails} from '../classes/project';
+import {Project, ProjectDetails} from '../models/project';
 import {HttpClient} from '@angular/common/http';
-import {Worklog} from '../classes/worklog';
+import {Worklog} from '../models/worklog';
 
 @Injectable({
   providedIn: 'root',

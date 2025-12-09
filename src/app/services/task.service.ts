@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Task, TaskDetails, TaskPriority, TaskStatus} from '../classes/task';
+import {Task, TaskDetails, TaskPriority, TaskStatus} from '../models/task';
 import {map} from 'rxjs';
 
 @Injectable({
@@ -49,8 +49,12 @@ export class TasksService {
     );
   }
 
-  createTask(projectId: number, task: Task) {
+  createTask(task: Task) {
     return this.http.post<Task>('/api/tasks/create', task);
+  }
+
+  deleteTask(id: number) {
+    return this.http.delete(`/api/tasks/${id}/delete`);
   }
 
   updateTask(id: number, task: Task) {

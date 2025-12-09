@@ -5,7 +5,7 @@ import {DatePicker} from 'primeng/datepicker';
 import {InputText} from 'primeng/inputtext';
 import {SelectButton} from 'primeng/selectbutton';
 import {Textarea} from 'primeng/textarea';
-import {Task, TaskDetails, TaskPriority, TaskStatus} from '../../../classes/task';
+import {Task, TaskDetails, TaskPriority, TaskStatus} from '../../../models/task';
 import {TasksService} from '../../../services/task.service';
 import {FormsModule} from '@angular/forms';
 
@@ -80,8 +80,7 @@ export class CreateTaskForm {
       completed_at: completedAt,
     }
 
-    console.log(task);
-    this.taskService.createTask(projectId, task).subscribe({
+    this.taskService.createTask(task).subscribe({
       next: (createdTask) => {
         let createdTaskVal = createdTask as TaskDetails;
         this.taskCreated.emit(createdTaskVal);

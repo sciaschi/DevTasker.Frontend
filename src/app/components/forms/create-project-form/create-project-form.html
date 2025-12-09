@@ -1,0 +1,13 @@
+<div class="flex items-center gap-4 mb-4">
+  <label for="name" class="font-semibold w-24">Name</label>
+  <input pInputText id="name" class="flex-auto" autocomplete="off" [field]="createProjectForm.name" />
+</div>
+<div class="flex items-center gap-4 mb-8">
+  <label for="description" class="font-semibold w-24">Description</label>
+  <textarea pTextarea id="description" class="flex-auto h-50" [autoResize]="true"
+            autocomplete="off" [field]="createProjectForm.description"></textarea>
+</div>
+<div class="flex justify-end gap-2">
+  <button pButton type="submit" (click)="createProject()">Create</button>
+  <button pButton type="button" (click)="cancel()">Cancel</button>
+</div>

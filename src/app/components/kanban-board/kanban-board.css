@@ -1,0 +1,128 @@
+:host ::ng-deep .task-options-menu.p-menu-overlay {
+  transform-origin: top right;
+  translate: -90% 0;
+}
+
+p-menu {
+  width: 40px;
+}
+
+.tasks-scrollbar {
+  --scrollbar-thumb-color: rgba(120, 120, 120, 0.8);
+  --scrollbar-thumb-hover-color: var(--scrollbar-thumb-color);
+  --scrollbar-border-radius: 10px;
+  --scrollbar-offset: 15;
+}
+
+.tasks-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 25px 25px 0;
+  display: inline-block;
+  overflow-x: hidden;
+  vertical-align: top;
+  padding: 10px;
+  border-radius: 20px;
+  background-color: #191c1e;
+}
+
+.tasks-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.tasks-header > h2 {
+  margin: 10px 10px 0 10px;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.tasks-list {
+  min-height: 60px;
+  border-radius: 4px;
+  overflow: hidden;
+  display: block;
+  font-family: sans-serif;
+}
+
+.task-title {
+  max-width: 70%;
+  text-overflow: ellipsis;
+}
+
+.task-count {
+  margin-left: 10px;
+  font-size: 12px;
+}
+
+.priority {
+  margin-right: 0;
+  margin-left: auto;
+  border-radius: 5px;
+  color: #2f2f2f;
+  padding: 0 10px 0 10px;
+}
+
+.options {
+  display: flex;
+  min-width: 30%;
+  width: 30%;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.options > button {
+  margin-right: 5px;
+  margin-left: auto;
+  border-radius: 5px;
+  color: #a6a6a6;
+}
+
+.options > button:hover {
+  cursor: pointer;
+  color: #575757;
+}
+
+.task-box {
+  padding: 15px 10px;
+  color: #a5a5a5;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
+  cursor: move;
+  background: #0e1011;
+  font-size: 14px;
+  font-family: sans-serif;
+  margin-bottom: 6px;
+  border-radius: 10px;
+}
+
+.task-box > fa-icon{
+  margin-right: 20px;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+  0 8px 10px 1px rgba(0, 0, 0, 0.14),
+  0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.task-box:last-child {
+  border: none;
+}
+
+.task-list.cdk-drop-list-dragging .task-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

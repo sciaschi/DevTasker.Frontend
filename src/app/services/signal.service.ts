@@ -1,7 +1,7 @@
 // src/app/services/signalr.service.ts
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import {Task} from '../classes/task';
+import {Task} from '../models/task';
 
 @Injectable({
   providedIn: 'root'
