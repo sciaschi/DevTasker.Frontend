@@ -1,0 +1,15 @@
+.accordion-header {
+  padding: 5px;
+  margin: 0 10px 5px 10px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.accordion-content {
+  height: 0;
+  overflow: hidden;
+}
+
+fa-icon {
+  display: inline-block;
+}

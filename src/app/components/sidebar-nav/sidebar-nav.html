@@ -1,0 +1,23 @@
+<div #sidebarnav id="sidebar-nav" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+  <div id="sidebar-header">
+    <img id="top-img" src="assets/images/business.png" alt="logo" />
+    <h5 #companyTitle id="company-title">DevTasker</h5>
+  </div>
+
+  <nav>
+    <ul class="nav">
+      <li class="nav-item" #navButton routerLink="/dashboard" routerLinkActive="active">
+        <a class="nav-button" >
+          <fa-icon [icon]="faHome"></fa-icon>
+          <span #navLabel class="nav-link">Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item" #navButton routerLink="/projects" routerLinkActive="active">
+        <a class="nav-button">
+          <fa-icon [icon]="faFolderClosed"></fa-icon>
+          <span #navLabel class="nav-link">Projects</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

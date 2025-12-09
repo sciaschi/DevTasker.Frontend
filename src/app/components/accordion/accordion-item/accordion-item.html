@@ -1,0 +1,10 @@
+<div class="accordion-item">
+  <div class="accordion-header" (click)="onClickHeader()">
+    <fa-icon #iconEl class="ml-1 mr-4" [icon]="faChevronDown"></fa-icon>
+    <ng-content select="[header]"></ng-content>
+  </div>
+
+  <div class="accordion-content" #contentEl [class.is-open]="isOpen">
+    <ng-content></ng-content>
+  </div>
+</div>

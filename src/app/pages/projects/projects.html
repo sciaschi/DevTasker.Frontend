@@ -1,0 +1,150 @@
+<div class="flex h-full">
+  <div id="projects-sidebar">
+    <p-input-group>
+      <fa-icon [icon]="faSearch"></fa-icon>
+      <input id="search-text" pInputText placeholder="Search..." />
+    </p-input-group>
+
+    <app-accordion>
+      <app-accordion-item>
+        <span header>Projects</span>
+        <ul>
+          @for (project of projects; track project.id;) {
+            <li class="project-item"
+                (click)="onProjectClick(project.id)"
+                [class.active]="project.id === selectedProjectId">
+              <div>
+                <fa-icon class="mr-5" [icon]="faFolderClosed"></fa-icon>
+                <span class="project-name">{{ project.name }}</span>
+                <span class="project-badge">
+                  {{ project.tasks ? project.tasks.length : 0 }}
+                </span>
+              </div>
+            </li>
+          }
+        </ul>
+      </app-accordion-item>
+    </app-accordion>
+  </div>
+
+  @if (selectedProjectId !== null && getSelectedProject) {
+    <div id="tasks" class="w-full h-full">
+      <div class="tasks-container">
+        <div class="tasks-header">
+          <h2>To do <span class="task-count">{{getTodoTasks.length}}</span></h2>
+          <div class="options">
+            <button #pAddTodo class="button" type="button" (click)="showDialog()">
+              <fa-icon [icon]="faPlus" /> Add task
+            </button>
+          </div>
+        </div>
+        <div
+          cdkDropList
+          id="todoList"
+          #todoList="cdkDropList"
+          [cdkDropListData]="getTodoTasks"
+          [cdkDropListConnectedTo]="[inProgressList, doneList]"
+          class="tasks-list"
+          (cdkDropListDropped)="drop($event)">
+          @for (task of getTodoTasks; track task.id) {
+            <div class="task-box" cdkDrag [cdkDragData]="task">
+              <fa-icon [icon]="faGrip" />
+              <span class="task-title">
+              {{ task.title }}
+              </span>
+              <div class="options float-end">
+                <div class="comment-count">
+                  <fa-icon [icon]="faListDots"/> {{task.work_logs.length}} Work logs
+                </div>
+                <div class="priority" style="background-color: {{priorityBgColors[task.priority]}}">
+                  {{formatEnumName(task.priority, TaskPriority)}}
+                </div>
+                <button class="btn-task-settings" type="button"><fa-icon [icon]="faEllipsisVertical"></fa-icon></button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="tasks-container">
+        <div class="tasks-header">
+          <h2>In Progress <span class="task-count">{{getInProgressTasks.length}}</span></h2>
+          <div class="options">
+            <button #pAddInProgress class="button" type="button" (click)="showDialog()">
+              <fa-icon [icon]="faPlus" /> Add task
+            </button>
+          </div>
+        </div>
+        <div
+          cdkDropList
+          id="inProgressList"
+          #inProgressList="cdkDropList"
+          [cdkDropListData]="getInProgressTasks"
+          [cdkDropListConnectedTo]="[todoList, doneList]"
+          class="tasks-list"
+          (cdkDropListDropped)="drop($event)">
+          @for (task of getInProgressTasks; track task.id) {
+            <div class="task-box" cdkDrag [cdkDragData]="task">
+              <fa-icon [icon]="faGrip" />
+              <span class="task-title">
+                {{ task.title }}
+              </span>
+              <div class="options float-end">
+                <div class="comment-count">
+                  <fa-icon [icon]="faListDots"/> {{task.work_logs.length}} Work logs
+                </div>
+                <div class="priority" style="background-color: {{priorityBgColors[task.priority]}}">
+                  {{formatEnumName(task.priority, TaskPriority)}}
+                </div>
+                <button class="btn-task-settings" type="button"><fa-icon [icon]="faEllipsisVertical"></fa-icon></button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="tasks-container">
+        <div class="tasks-header">
+          <h2>Done <span class="task-count">{{getDoneTasks.length}}</span></h2>
+          <div class="options">
+            <button #pAddDone class="button" type="button" (click)="showDialog()">
+              <fa-icon [icon]="faPlus" /> Add task
+            </button>
+          </div>
+        </div>
+        <div
+          cdkDropList
+          id="doneList"
+          #doneList="cdkDropList"
+          [cdkDropListData]="getDoneTasks"
+          [cdkDropListConnectedTo]="[todoList, inProgressList]"
+          class="tasks-list"
+          (cdkDropListDropped)="drop($event)">
+          @for (task of getDoneTasks; track task.id;) {
+            <div class="task-box" cdkDrag [cdkDragData]="task">
+              <fa-icon [icon]="faGrip" />
+              <span class="task-title">
+                {{ task.title }}
+              </span>
+              <div class="options">
+                <div class="comment-count">
+                  <fa-icon [icon]="faListDots"/> {{task.work_logs.length}} Work logs
+                </div>
+                <div class="priority" style="background-color: {{priorityBgColors[task.priority]}}">
+                  {{formatEnumName(task.priority, TaskPriority)}}
+                </div>
+                <button class="btn-task-settings" type="button"><fa-icon [icon]="faEllipsisVertical"></fa-icon></button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+<p-dialog header="Create a new Task" [modal]="true" [(visible)]="visible" [maximizable]="true">
+  <app-create-task-form [projectId]="selectedProjectId ?? 0"
+                        (cancelled)="visible.set(false)"
+                        (taskCreated)="onTaskCreated($event)"></app-create-task-form>
+</p-dialog>

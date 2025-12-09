@@ -1,0 +1,42 @@
+#projects-todo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold
+}
+
+#eye-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: oklch(85.2% 0.199 91.936);
+  font-size: 30px;
+  border-radius: 30px;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  margin: 10px 0 0 0;
+  background-color: #0e1011;
+}
+
+#title {
+  line-height: normal;
+  padding: 5px;
+  font-size: 15px;
+  color: #818181;
+}
+
+#stats-icon {
+  color: #3d8538;
+  margin-right: 5px;
+}
+
+#count {
+  color: #dfe6e9;
+  line-height: 1;
+  font-size: 40px;
+  margin-top: 5px;
+  padding: 5px;
+}

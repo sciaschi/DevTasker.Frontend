@@ -1,0 +1,35 @@
+<div class="flex items-center gap-4 mb-4">
+  <label for="title" class="font-semibold w-24">Title</label>
+  <input pInputText id="title" class="flex-auto"  autocomplete="off" [field]="createTaskForm.title" />
+</div>
+<div class="flex items-center gap-4 mb-8">
+  <label for="description" class="font-semibold w-24">Description</label>
+  <textarea pTextarea id="description" class="flex-auto h-50" [autoResize]="true"
+            autocomplete="off" [field]="createTaskForm.description"></textarea>
+</div>
+<div class="flex items-center gap-4 mb-8">
+  <label for="status" class="font-semibold w-24">Status</label>
+  <p-select-button id="status"
+                   [options]="statuses"
+                   [ngModel]="createTaskModel().status"
+                   (ngModelChange)="createTaskForm.status().setControlValue($event)"
+                   optionLabel="name" optionValue="value" />
+</div>
+<div class="flex items-center gap-4 mb-8">
+  <label for="priority" class="font-semibold w-24">Priority</label>
+  <p-select-button id="priority"
+                   [options]="priorities"
+                   [ngModel]="createTaskModel().priority"
+                   (ngModelChange)="createTaskForm.priority().setControlValue($event)"
+                   optionLabel="name" optionValue="value"/>
+</div>
+<div class="flex items-center gap-4 mb-8">
+  <label for="due-date" class="font-semibold w-24">Due Date</label>
+  <p-date-picker id="due-date"
+                 [ngModel]="createTaskModel().due_date"
+                 (ngModelChange)="createTaskForm.due_date().setControlValue($event)" />
+</div>
+<div class="flex justify-end gap-2">
+  <button pButton type="submit" (click)="createTask()">Create</button>
+  <button pButton type="button" label="Cancel" (click)="cancel()"></button>
+</div>
