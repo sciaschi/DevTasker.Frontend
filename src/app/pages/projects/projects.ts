@@ -1,4 +1,4 @@
-import {Component, OnInit, signal, WritableSignal} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, signal, WritableSignal} from '@angular/core';
 import { InputText } from 'primeng/inputtext';
 import { InputGroup } from 'primeng/inputgroup';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -30,6 +30,7 @@ import {CreateProjectForm} from '../../components/forms/create-project-form/crea
   ],
   templateUrl: './projects.html',
   styleUrl: './projects.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Projects implements OnInit {
   protected readonly faSearch = faSearch;
@@ -45,11 +46,12 @@ export class Projects implements OnInit {
     return this.projects.find(p => p.id === this.selectedProjectId) ?? null;
   }
 
-  constructor(private projectService: ProjectService, private taskService: TasksService) {}
+  constructor(private projectService: ProjectService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.projectService.getAllProjectsWithDetails().subscribe(projects => {
-      this.projects = projects
+      this.projects = projects;
+      this.cdr.markForCheck();
     });
   }
 
