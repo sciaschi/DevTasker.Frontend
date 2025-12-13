@@ -8,29 +8,34 @@
       <app-accordion-item [defaultOpen]="true">
         <div class="header" header>
           <span>Projects</span>
-          <div class="options">
+          <div class="header-options">
             <button type="button" (click)="$event.stopPropagation(); onProjectAddClick();">
               <fa-icon [icon]="faPlus" />
             </button>
           </div>
         </div>
-        <ul>
-          @for (project of projects; track project.id;) {
-            <li class="project-item"
-                (click)="onProjectClick(project.id)"
-                [class.active]="project.id === selectedProjectId">
-              <div>
-                <fa-icon class="mr-3" [icon]="faFolderClosed"></fa-icon>
-                <div class="project-name">
-                  {{ project.name }}
+        @if(projects.length) {
+          <ul>
+            @for (project of projects; track project.id;) {
+              <li class="project-item"
+                  (click)="onProjectClick(project.id)"
+                  [class.active]="project.id === selectedProjectId">
+                <div>
+                  <fa-icon class="mr-3" [icon]="faFolderClosed"></fa-icon>
+                  <div class="project-name">
+                    {{ project.name }}
+                  </div>
+                  <div class="project-badge">
+                    <span class="project-badge-text">{{ project.tasks ? project.tasks.length : 0 }}</span>
+                  </div>
                 </div>
-                <div class="project-badge">
-                  <span class="project-badge-text">{{ project.tasks ? project.tasks.length : 0 }}</span>
-                </div>
-              </div>
-            </li>
-          }
-        </ul>
+              </li>
+            }
+          </ul>
+        }
+        @else {
+          <div id="no-projects">No projects yet!</div>
+        }
       </app-accordion-item>
     </app-accordion>
   </div>
@@ -42,6 +47,6 @@
 
 <p-dialog header="Create a new Project" [modal]="true" [(visible)]="createProjectsVisible">
   <app-create-project-form (cancelled)="createProjectsVisible.set(false)"
-                           (projectCreated)="onProjectCreated($event)" />
+                           (projectCreated)="onProjectCreated()" />
 </p-dialog>
 

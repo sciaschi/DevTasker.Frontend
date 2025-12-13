@@ -20,7 +20,7 @@ export class WorklogsService {
 
   createWorkLog(workLog: Worklog) {
     return this.http.post<Worklog>(`/api/worklogs/create`, {
-      task_item_id: workLog.taskId,
+      task_item_id: workLog.task_item_id,
       comment: workLog.comment,
     });
   }

@@ -3,6 +3,65 @@
   translate: -90% 0;
 }
 
+.kanban-board {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.task-details {
+  margin-left: 25px;
+  padding: 40px 15px 10px 15px;
+  background-color: #191c1e;
+  border-radius: 20px;
+  width: 30%;
+}
+
+.task-details-header {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.task-details-content {
+
+}
+
+.task-details-content > div {
+  margin: 10px 0 10px 0;
+}
+
+#task-description {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #2f2f2f;
+  color: #a5a5a5;
+  padding-left: 10px;
+}
+
+.task-details-footer {
+  border-top: 1px solid #2f2f2f;
+  margin-top: 10px;
+}
+
+.task-work-logs {
+  margin-top: 10px;
+}
+
+.work-logs-header {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#work-log-count {
+  color: #dfe6e9;
+  font-size: 12px;
+}
+
+.p-panel-content {
+  display: flex;
+  flex-direction: column;
+}
+
 p-menu {
   width: 40px;
 }
@@ -38,50 +97,31 @@ p-menu {
   font-size: 20px;
 }
 
-.tasks-list {
-  min-height: 60px;
-  border-radius: 4px;
-  overflow: hidden;
-  display: block;
-  font-family: sans-serif;
-}
-
-.task-title {
-  max-width: 70%;
-  text-overflow: ellipsis;
-}
-
-.task-count {
-  margin-left: 10px;
-  font-size: 12px;
-}
-
-.priority {
-  margin-right: 0;
-  margin-left: auto;
-  border-radius: 5px;
-  color: #2f2f2f;
-  padding: 0 10px 0 10px;
-}
-
-.options {
-  display: flex;
-  min-width: 30%;
-  width: 30%;
+.header-options {
+  display:flex;
+  justify-content: flex-end;
   margin-left: auto;
   margin-right: 0;
 }
 
-.options > button {
+.header-options > button {
   margin-right: 5px;
   margin-left: auto;
   border-radius: 5px;
   color: #a6a6a6;
 }
 
-.options > button:hover {
+.header-options > button:hover {
   cursor: pointer;
   color: #575757;
+}
+
+.tasks-list {
+  min-height: 60px;
+  border-radius: 4px;
+  overflow: hidden;
+  display: block;
+  font-family: sans-serif;
 }
 
 .task-box {
@@ -91,7 +131,6 @@ p-menu {
   flex-direction: row;
   align-items: center;
   box-sizing: border-box;
-  cursor: move;
   background: #0e1011;
   font-size: 14px;
   font-family: sans-serif;
@@ -101,6 +140,7 @@ p-menu {
 
 .task-box > fa-icon{
   margin-right: 20px;
+  cursor: move;
 }
 
 .cdk-drag-preview {
@@ -126,3 +166,48 @@ p-menu {
 .task-list.cdk-drop-list-dragging .task-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
+
+.task-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-count {
+  margin-left: 10px;
+  font-size: 12px;
+}
+
+.priority {
+  max-width: fit-content;
+  border-radius: 5px;
+  color: #2f2f2f;
+  padding: 0 10px 0 10px;
+}
+
+.options {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 160px 130px 120px auto;
+  column-gap: 12px;
+  align-items: center;
+}
+
+.options > button {
+  margin-right: 5px;
+  margin-left: auto;
+  border-radius: 5px;
+  color: #a6a6a6;
+}
+
+.options > button:hover {
+  cursor: pointer;
+  color: #575757;
+}
+
+.due-date {
+  margin-right:15px;
+}
+

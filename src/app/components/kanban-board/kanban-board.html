@@ -1,120 +1,173 @@
-<div id="tasks" class="w-full h-full">
-  <ng-scrollbar class="tasks-scrollbar" visibility="hover">
-    <div class="tasks-container">
-      <div class="tasks-header">
-        <h2>To do <span class="task-count">{{getTodoTasks.length}}</span></h2>
-        <div class="options">
-          <button #pAddTodo class="button" type="button" (click)="showDialog()">
-            <fa-icon [icon]="faPlus" /> Add task
-          </button>
-        </div>
-      </div>
-      <div
-        cdkDropList
-        id="todoList"
-        #todoList="cdkDropList"
-        [cdkDropListData]="getTodoTasks"
-        [cdkDropListConnectedTo]="[inProgressList, doneList]"
-        class="tasks-list"
-        (cdkDropListDropped)="drop($event)">
-        @for (task of getTodoTasks; track task.id) {
-          <div class="task-box" cdkDrag [cdkDragData]="task">
-            <fa-icon [icon]="faGrip" />
-            <span class="task-title">
-                {{ task.title }}
-                </span>
-            <div class="options float-end">
-              <div class="comment-count">
-                <fa-icon [icon]="faListDots"/> {{task.work_logs.length}} Work logs
-              </div>
-              <div class="priority" style="background-color: {{priorityBgColors[task.priority]}}">
-                {{formatEnumName(task.priority, TaskPriority)}}
-              </div>
-              <button class="btn-task-settings" type="button" (click)="openTaskOptionsMenu($event, task)"><fa-icon [icon]="faEllipsisVertical"></fa-icon></button>
-            </div>
+<div class="kanban-board">
+  <div id="tasks" class="w-full h-full">
+    <ng-scrollbar class="tasks-scrollbar" visibility="hover">
+      <div class="tasks-container">
+        <div class="tasks-header">
+          <h2>To do <span class="task-count">{{getTodoTasks.length}}</span></h2>
+          <div class="header-options">
+            <button #pAddTodo class="button" type="button" (click)="showDialog()">
+              <fa-icon [icon]="faPlus" /> Add task
+            </button>
           </div>
-        }
-      </div>
-    </div>
-
-    <div class="tasks-container">
-      <div class="tasks-header">
-        <h2>In Progress <span class="task-count">{{getInProgressTasks.length}}</span></h2>
-        <div class="options">
-          <button #pAddInProgress class="button" type="button" (click)="showDialog()">
-            <fa-icon [icon]="faPlus" /> Add task
-          </button>
+        </div>
+        <div
+          cdkDropList
+          id="todoList"
+          #todoList="cdkDropList"
+          [cdkDropListData]="getTodoTasks"
+          [cdkDropListConnectedTo]="[inProgressList, doneList]"
+          class="tasks-list"
+          (cdkDropListDropped)="drop($event)">
+          @for (task of getTodoTasks; track task.id) {
+            <div class="task-box" cdkDrag [cdkDragData]="task">
+              <fa-icon [icon]="faGrip" cdkDragHandle />
+              <span class="task-title">
+                {{ task.title }}
+              </span>
+              <div class="options float-end">
+                <div class="due-date">
+                  <fa-icon [icon]="faClock"/>
+                  {{ task.due_date ? 'Due ' + moment(task.due_date).format('MMM Do YYYY') : 'No Due Date' }}
+                </div>
+                <div class="comment-count">
+                  <fa-icon [icon]="faListDots"/> {{ task.work_logs.length }} Work logs
+                </div>
+                <div class="priority" style="background-color: {{priorityBgColors[task.priority]}}">
+                  {{formatEnumName(task.priority, TaskPriority)}}
+                </div>
+                <button class="btn-task-settings" type="button" (click)="openTaskDetailsPopup($event, task)"> <fa-icon [icon]="faCircleInfo" /></button>
+                <button class="btn-task-settings" type="button" (click)="openTaskOptionsMenu($event, task)"><fa-icon [icon]="faEllipsisVertical" /></button>
+              </div>
+            </div>
+          }
         </div>
       </div>
-      <div
-        cdkDropList
-        id="inProgressList"
-        #inProgressList="cdkDropList"
-        [cdkDropListData]="getInProgressTasks"
-        [cdkDropListConnectedTo]="[todoList, doneList]"
-        class="tasks-list"
-        (cdkDropListDropped)="drop($event)">
-        @for (task of getInProgressTasks; track task.id) {
-          <div class="task-box" cdkDrag [cdkDragData]="task">
-            <fa-icon [icon]="faGrip" />
-            <span class="task-title">
+
+      <div class="tasks-container">
+        <div class="tasks-header">
+          <h2>In Progress <span class="task-count">{{getInProgressTasks.length}}</span></h2>
+          <div class="header-options">
+            <button #pAddInProgress class="button" type="button" (click)="showDialog()">
+              <fa-icon [icon]="faPlus" /> Add task
+            </button>
+          </div>
+        </div>
+        <div
+          cdkDropList
+          id="inProgressList"
+          #inProgressList="cdkDropList"
+          [cdkDropListData]="getInProgressTasks"
+          [cdkDropListConnectedTo]="[todoList, doneList]"
+          class="tasks-list"
+          (cdkDropListDropped)="drop($event)">
+          @for (task of getInProgressTasks; track task.id) {
+            <div class="task-box" cdkDrag [cdkDragData]="task">
+              <fa-icon [icon]="faGrip" cdkDragHandle />
+              <span class="task-title">
               {{ task.title }}
             </span>
-            <div class="options float-end">
-              <div class="comment-count">
-                <fa-icon [icon]="faListDots"/> {{task.work_logs.length}} Work logs
+              <div class="options float-end">
+                <div class="due-date">
+                  <fa-icon [icon]="faClock"/>
+                  {{ task.due_date ? 'Due ' + moment(task.due_date).format('MMM Do YYYY') : 'No Due Date' }}
+                </div>
+                <div class="comment-count">
+                  <fa-icon [icon]="faListDots"/> {{ task.work_logs.length }} Work logs
+                </div>
+                <div class="priority" style="background-color: {{priorityBgColors[task.priority]}}">
+                  {{formatEnumName(task.priority, TaskPriority)}}
+                </div>
+                <button class="btn-task-settings" type="button" (click)="openTaskOptionsMenu($event, task)">
+                  <fa-icon [icon]="faEllipsisVertical" />
+                </button>
               </div>
-              <div class="priority" style="background-color: {{priorityBgColors[task.priority]}}">
-                {{formatEnumName(task.priority, TaskPriority)}}
-              </div>
-              <button class="btn-task-settings" type="button" (click)="openTaskOptionsMenu($event, task)">
-                <fa-icon [icon]="faEllipsisVertical" />
-              </button>
             </div>
-          </div>
-        }
-      </div>
-    </div>
-
-    <div class="tasks-container">
-      <div class="tasks-header">
-        <h2>Done <span class="task-count">{{getDoneTasks.length}}</span></h2>
-        <div class="options">
-          <button #pAddDone class="button" type="button" (click)="showDialog()">
-            <fa-icon [icon]="faPlus" /> Add task
-          </button>
+          }
         </div>
       </div>
-      <div
-        cdkDropList
-        id="doneList"
-        #doneList="cdkDropList"
-        [cdkDropListData]="getDoneTasks"
-        [cdkDropListConnectedTo]="[todoList, inProgressList]"
-        class="tasks-list"
-        (cdkDropListDropped)="drop($event)">
-        @for (task of getDoneTasks; track task.id;) {
-          <div class="task-box" cdkDrag [cdkDragData]="task">
-            <fa-icon [icon]="faGrip" />
-            <span class="task-title">
-                  {{ task.title }}
-                </span>
-            <div class="options">
-              <div class="comment-count">
-                <fa-icon [icon]="faListDots"/> {{task.work_logs.length}} Work logs
-              </div>
-              <div class="priority" style="background-color: {{priorityBgColors[task.priority]}}">
-                {{formatEnumName(task.priority, TaskPriority)}}
-              </div>
-              <button class="btn-task-settings" type="button" (click)="openTaskOptionsMenu($event, task)">
-                <fa-icon [icon]="faEllipsisVertical" />
-              </button>
-            </div>
+
+      <div class="tasks-container">
+        <div class="tasks-header">
+          <h2>Done <span class="task-count">{{getDoneTasks.length}}</span></h2>
+          <div class="header-options">
+            <button #pAddDone class="button" type="button" (click)="showDialog()">
+              <fa-icon [icon]="faPlus" /> Add task
+            </button>
           </div>
-        }
+        </div>
+        <div
+          cdkDropList
+          id="doneList"
+          #doneList="cdkDropList"
+          [cdkDropListData]="getDoneTasks"
+          [cdkDropListConnectedTo]="[todoList, inProgressList]"
+          class="tasks-list"
+          (cdkDropListDropped)="drop($event)">
+          @for (task of getDoneTasks; track task.id;) {
+            <div class="task-box" cdkDrag [cdkDragData]="task">
+              <fa-icon [icon]="faGrip" cdkDragHandle />
+              <span class="task-title">
+              {{ task.title }}
+            </span>
+              <div class="options">
+                <div class="due-date">
+                  <fa-icon [icon]="faClock"/>
+                  {{ task.due_date ? 'Due ' + moment(task.due_date).format('MMM Do YYYY') : 'No Due Date' }}
+                </div>
+                <div class="comment-count">
+                  <fa-icon [icon]="faListDots"/> {{ task.work_logs.length }} Work logs
+                </div>
+                <div class="priority" style="background-color: {{priorityBgColors[task.priority]}}">
+                  {{formatEnumName(task.priority, TaskPriority)}}
+                </div>
+                <button class="btn-task-settings" type="button" (click)="openTaskOptionsMenu($event, task)">
+                  <fa-icon [icon]="faEllipsisVertical" />
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </ng-scrollbar>
+  </div>
+  <div class="task-details">
+    <div class="task-details-header">
+      {{contextTask.title}}
+    </div>
+    <div class="task-details-content">
+      <div id="task-description">
+        {{contextTask.description}}
+      </div>
+      <div class="due-date">
+        <fa-icon [icon]="faClock"/>
+        {{ contextTask.due_date ? 'Due ' + moment(contextTask.due_date).format('MMM Do YYYY') : 'No Due Date' }}
+      </div>
+      <div class="priority" [style]="{ 'background-color': priorityBgColors[contextTask.priority]}">
+         {{formatEnumName(contextTask.priority, TaskPriority)}}
       </div>
     </div>
-  </ng-scrollbar>
+    <div class="task-details-footer">
+      <div class="task-work-logs">
+        <div class="work-logs-header">
+          Work Logs
+          <span id="work-log-count">
+            ({{contextTask.work_logs.length}})
+          </span>
+        </div>
+        <textarea pTextarea #addWorkLogTextArea class="w-full"
+                  placeholder="Shift + Enter to create work log..."
+                  [autoResize]="true"
+                  (keydown.shift.enter)="$event.preventDefault(); addWorkLog($event)"></textarea>
+        <div class="work-logs-content">
+          @for (workLog of contextTask.work_logs; track workLog.id;) {
+            <p-panel class="flex flex-row">
+              {{workLog.comment}}
+              <fa-icon [icon]="faClock" />{{workLog.created_at | date: 'MMM Do YYYY'}}
+            </p-panel>
+          }
+        </div>
+      </div>
+  </div>
 </div>
 
 <p-menu #taskOptionsMenu styleClass="task-options-menu" [model]="menuItems" [popup]="true" />
@@ -122,5 +175,5 @@
 <p-dialog header="Create a new Task" [modal]="true" [(visible)]="visible" [maximizable]="true">
   <app-create-task-form [projectId]="selectedProjectId()"
                         (cancelled)="visible.set(false)"
-                        (taskCreated)="onTaskCreated($event)"></app-create-task-form>
+                        (taskCreated)="onTaskCreated()"></app-create-task-form>
 </p-dialog>

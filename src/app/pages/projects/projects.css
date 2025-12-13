@@ -91,23 +91,34 @@ p-input-group {
   width: 100%;
 }
 
-.options {
+.header-options {
+  display:flex;
+  justify-content: flex-end;
   margin-left: auto;
   margin-right: 0;
 }
 
-.options > button {
+.header-options > button {
   margin-right: 5px;
   margin-left: auto;
   border-radius: 5px;
   color: #a6a6a6;
 }
 
-.options > button:hover {
+.header-options > button:hover {
   cursor: pointer;
   color: #575757;
 }
 
 app-kanban-board {
   width: 100%;
+}
+
+#no-projects {
+  max-width: 230px;
+  padding: 5px;
+  margin: 0 10px 5px 10px;
+  border-radius: 8px;
+  text-align: center;
+  color: #575757;
 }

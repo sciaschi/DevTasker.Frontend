@@ -1,7 +1,8 @@
 export class Worklog {
   public id: number = 0;
-  public taskId: number = 0;
-  public startedAt: Date = new Date();
-  public endedAt: Date | null = null;
+  public task_item_id: number = 0;
+  public started_at: Date = new Date();
+  public ended_at: Date | null = null;
   public comment: string | null = null;
+  public created_at: Date = new Date();
 }

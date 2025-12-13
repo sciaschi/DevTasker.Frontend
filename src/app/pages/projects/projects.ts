@@ -8,11 +8,11 @@ import { BadgeModule } from 'primeng/badge';
 import { AccordionItem } from '../../components/accordion/accordion-item/accordion-item';
 import { ProjectDetails} from '../../models/project';
 import { ProjectService } from '../../services/project.service';
-import { TasksService } from '../../services/task.service';
 import {FormsModule} from '@angular/forms';
 import {KanbanBoard} from '../../components/kanban-board/kanban-board';
 import {Dialog} from 'primeng/dialog';
 import {CreateProjectForm} from '../../components/forms/create-project-form/create-project-form';
+import {SignalRService} from '../../services/signal.service';
 
 @Component({
   selector: 'app-projects',
@@ -46,23 +46,29 @@ export class Projects implements OnInit {
     return this.projects.find(p => p.id === this.selectedProjectId) ?? null;
   }
 
-  constructor(private projectService: ProjectService, private cdr: ChangeDetectorRef) {}
+  constructor(private projectService: ProjectService, private cdr: ChangeDetectorRef,
+              private signalRService: SignalRService) {}
 
   ngOnInit(): void {
     this.projectService.getAllProjectsWithDetails().subscribe(projects => {
       this.projects = projects;
       this.cdr.markForCheck();
     });
+
+    this.signalRService.onProjectCreated(project => {
+      let projectDetails = project as ProjectDetails;
+
+      this.onProjectCreated();
+
+      if(!projectDetails.tasks)
+        projectDetails.tasks = [];
+
+      this.projects.push(projectDetails);
+    });
   }
 
-  onProjectCreated(project: ProjectDetails) {
+  onProjectCreated() {
     this.createProjectsVisible.set(false);
-
-    if (!project.tasks) {
-      project.tasks = [];
-    }
-
-    this.projects.push(project);
   }
 
   onProjectClick(projectId: number) {
@@ -72,5 +78,4 @@ export class Projects implements OnInit {
   onProjectAddClick() {
     this.createProjectsVisible.set(true);
   }
-
 }

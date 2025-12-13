@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import {Task} from '../models/task';
+import {Project} from '../models/project';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,17 @@ export class SignalRService {
 
     this.hubConnection.start().then(() => console.log('SignalR connection started'))
       .catch(err => console.error('Error while starting SignalR connection: ', err));
+  }
+
+  onProjectCreated(callback: (project: Project) => void) {
+    this.hubConnection.on('ProjectCreated', task => {
+      callback(task);
+    });
+  }
+  onProjectUpdated(callback: (project: Project) => void) {
+    this.hubConnection.on('ProjectUpdated', task => {
+      callback(task);
+    });
   }
 
   onTaskCreated(callback: (task: Task) => void) {

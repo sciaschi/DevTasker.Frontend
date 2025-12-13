@@ -1,15 +1,32 @@
-import {Component, input, InputSignal, signal, ViewChild, WritableSignal} from '@angular/core';
-import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
+import {Component, ElementRef, input, InputSignal, OnInit, signal, ViewChild, WritableSignal} from '@angular/core';
+import {CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList} from '@angular/cdk/drag-drop';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {Menu} from 'primeng/menu';
 import {NgScrollbar} from 'ngx-scrollbar';
-import {faEllipsisVertical, faGrip, faListDots, faPlus} from '@fortawesome/free-solid-svg-icons';
+import {
+  faCircleExclamation,
+  faCircleInfo,
+  faClock,
+  faEllipsisVertical,
+  faGrip,
+  faListDots,
+  faPlus
+} from '@fortawesome/free-solid-svg-icons';
 import {TaskDetails, TaskPriority, TaskStatus} from '../../models/task';
 import {ProjectDetails} from '../../models/project';
 import {CreateTaskForm} from '../forms/create-task-form/create-task-form';
 import {Dialog} from 'primeng/dialog';
 import {MenuItem} from 'primeng/api';
 import {TasksService} from '../../services/task.service';
+import {SignalRService} from '../../services/signal.service';
+import moment from 'moment';
+import {InputText} from 'primeng/inputtext';
+import {Textarea} from 'primeng/textarea';
+import {InputGroup} from 'primeng/inputgroup';
+import {Panel} from 'primeng/panel';
+import {DatePipe} from '@angular/common';
+import {WorklogsService} from '../../services/worklogs.service';
+import {Worklog} from '../../models/worklog';
 
 @Component({
   selector: 'app-kanban-board',
@@ -20,22 +37,32 @@ import {TasksService} from '../../services/task.service';
     Menu,
     NgScrollbar,
     CreateTaskForm,
-    Dialog
+    Dialog,
+    CdkDragHandle,
+    Textarea,
+    Panel,
+    DatePipe,
   ],
   templateUrl: './kanban-board.html',
   styleUrl: './kanban-board.css',
 })
-export class KanbanBoard {
+export class KanbanBoard implements OnInit {
   @ViewChild('taskOptionsMenu', { static: true }) taskOptionsMenu!: Menu;
+  @ViewChild('addWorkLogTextArea', { static: true }) addWorkLogTextArea!: ElementRef<HTMLTextAreaElement>;
 
   protected readonly faPlus = faPlus;
   protected readonly faGrip = faGrip;
   protected readonly faEllipsisVertical = faEllipsisVertical;
   protected readonly faListDots = faListDots;
+  protected readonly faClock = faClock;
   protected readonly TaskPriority = TaskPriority;
+  protected readonly moment = moment;
 
   selectedProjectId = input(0);
   projects: InputSignal<ProjectDetails[]> = input.required();
+  visible:WritableSignal<boolean> = signal(false);
+  contextTask: TaskDetails = new TaskDetails();
+
   priorityBgColors: Record<TaskPriority, string> = {
     [TaskPriority.VeryLow]:  '#9CA3AF',
     [TaskPriority.Low]:      '#3B82F6',
@@ -43,11 +70,9 @@ export class KanbanBoard {
     [TaskPriority.High]:     '#FB923C',
     [TaskPriority.VeryHigh]: '#EF4444',
   };
-  visible:WritableSignal<boolean> = signal(false);
-  contextTask: TaskDetails = new TaskDetails();
 
   menuItems: MenuItem[] = [
-    {label: 'Delete', command: () => this.deleteTask(this.contextTask.id)},
+    {label: 'Delete', icon: 'fa-solid fa-trash', command: () => this.deleteTask(this.contextTask.id)},
   ];
 
   get getTodoTasks(): TaskDetails[] {
@@ -57,7 +82,7 @@ export class KanbanBoard {
     let projects = this.projects();
     let selectedProject = projects.find(p => p.id === selectedProjectId);
 
-    return selectedProject?.tasks.filter(x => x.status === TaskStatus.Todo) ?? [];
+    return selectedProject?.tasks?.filter(x => x.status === TaskStatus.Todo) ?? [];
   }
   get getInProgressTasks(): TaskDetails[] {
     const selectedProjectId = this.selectedProjectId();
@@ -80,24 +105,30 @@ export class KanbanBoard {
     return selectedProject?.tasks.filter(x => x.status === TaskStatus.Done) ?? [];
   }
 
-  constructor(private taskService: TasksService) {}
+  constructor(private taskService: TasksService,
+              private workLogService: WorklogsService,
+              private signalRService: SignalRService) {}
 
-  onTaskCreated(task: TaskDetails) {
+  ngOnInit(): void {
+    this.signalRService.onTaskCreated(task => {
+      const project = this.projects().find(p => p.id === task.project_id);
+      const taskDetails = task as TaskDetails;
+
+      if (!project) {
+        console.warn('Project not found for project_id:', task.project_id);
+        return;
+      }
+
+      if (!project.tasks)
+        project.tasks = [];
+
+      (project.tasks as TaskDetails[]).push(taskDetails);
+
+    });
+  }
+
+  onTaskCreated() {
     this.visible.set(false);
-
-    const project = this.projects().find(p => p.id === task.project_id);
-    if (!project) {
-      console.warn('Project not found for project_id:', task.project_id);
-      return;
-    }
-
-    if (!project.tasks) {
-      project.tasks = [];
-    }
-
-    (project.tasks as TaskDetails[]).push(task);
-
-    console.log('Task added to project list:', task);
   }
 
   deleteTask(id: number) {
@@ -115,15 +146,52 @@ export class KanbanBoard {
     });
   }
 
+  addWorkLog(event: Event) {
+    const value = this.addWorkLogTextArea.nativeElement.value;
+
+    const workLog: Worklog = {
+      id: 0,
+      task_item_id: this.contextTask.id,
+      comment: value,
+      started_at: new Date(),
+      ended_at: null,
+      created_at: new Date(),
+    };
+
+    this.workLogService.createWorkLog(workLog).subscribe({
+      next: (createdWorkLog) => {
+        this.contextTask.work_logs.push(createdWorkLog);
+      },
+      error: err => {
+        console.error(err);
+      }
+    });
+  }
+
   formatEnumName(enumValue: number, enumType: any): string {
     const raw = enumType[enumValue] as string;
-    if (!raw) return '';
+
+    if (!raw)
+      return '';
+
     return raw.replace(/([a-z])([A-Z])/g, '$1 $2');
+  }
+
+  isPastDue(dueDate: Date | null): boolean {
+    if (!dueDate)
+      return false;
+
+    return moment(dueDate).isBefore(moment());
   }
 
   openTaskOptionsMenu(event: MouseEvent, task: TaskDetails) {
     this.contextTask = task;
     this.taskOptionsMenu.toggle(event);
+  }
+
+  openTaskDetailsPopup(event: MouseEvent, task: TaskDetails) {
+    this.contextTask = task;
+    console.log()
   }
 
   showDialog() {
@@ -165,4 +233,6 @@ export class KanbanBoard {
       }
     });
   }
+
+  protected readonly faCircleInfo = faCircleInfo;
 }
